@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò chơi nối từ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+            width: 80%;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .word-list {
+            margin-top: 20px;
+        }
+        .word-item {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Trò chơi nối từ</h1>
+        <input type="text" id="wordInput" placeholder="Nhập từ của bạn">
+        <button onclick="submitWord()">Nối từ</button>
+        <div class="word-list" id="wordList">
+            <!-- Các từ sẽ được hiển thị ở đây -->
+        </div>
+    </div>
+
+    <script>
+        let words = [];
+
+        function submitWord() {
+            const input = document.getElementById('wordInput');
+            const newWord = input.value.trim().toLowerCase();
+
+            if (newWord.length === 0) {
+                alert('Vui lòng nhập từ.');
+                return;
+            }
+
+            if (words.length > 0) {
+                const lastWord = words[words.length - 1];
+                if (lastWord[lastWord.length - 1] !== newWord[0]) {
+                    alert('Từ của bạn phải bắt đầu bằng chữ cái cuối cùng của từ trước.');
+                    return;
+                }
+            }
+
+            words.push(newWord);
+            displayWords();
+            input.value = '';
+        }
+
+        function displayWords() {
+            const wordList = document.getElementById('wordList');
+            wordList.innerHTML = '';
+            words.forEach(word => {
+                const div = document.createElement('div');
+                div.className = 'word-item';
+                div.textContent = word;
+                wordList.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
