@@ -1,89 +1,97 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trò chơi nối từ</title>
+    <title>Trò Chơi Nối Từ</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-        .container {
             text-align: center;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        input {
-            padding: 10px;
-            font-size: 16px;
-            margin: 10px;
-            width: 80%;
+        #wordDisplay {
+            font-size: 24px;
+            margin-bottom: 20px;
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+        #timer {
+            font-size: 18px;
+            margin-bottom: 20px;
         }
-        .word-list {
-            margin-top: 20px;
-        }
-        .word-item {
-            margin: 5px 0;
+        #answerInput {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Trò chơi nối từ</h1>
-        <input type="text" id="wordInput" placeholder="Nhập từ của bạn">
-        <button onclick="submitWord()">Nối từ</button>
-        <div class="word-list" id="wordList">
-            <!-- Các từ sẽ được hiển thị ở đây -->
-        </div>
-    </div>
+    <h1>Trò Chơi Nối Từ</h1>
+    <div id="wordDisplay"></div>
+    <div id="timer">Thời gian còn lại: <span id="countdown"></span></div>
+    <input type="text" id="answerInput" placeholder="Nhập cụm từ của bạn ở đây">
+    <button onclick="startGame()">Bắt đầu</button>
+    <button onclick="submitAnswer()">OK</button>
 
     <script>
-        let words = [];
+const words = ["máy bay", "bổng lộc", "lộc biển", "biển cả", "cả nước", "nước rỉ", "rỉ sét", "sét đánh", "đánh giặc", "giặc phản", "phản kích", "kích thích", "thích thú", "thú cưng", "cưng chiều", "chiều lòng", "lòng nhân", "nhân ái", "ái quốc", "quốc ca", "ca hát", "hát ru", "ru ngủ", "ngủ say", "say sưa", "sưa sẩm", "sẩm sượt", "sượt mướt", "mướt mát", "mát mẻ", "mẻ mực", "mực tàu", "tàu hỏa", "hỏa tốc", "tốc độ", "độ cao", "cao chót", "chót vót", "vót lênh", "lênh đênh", "đênh đang", "đang đưa", "đưa đón", "đón đọc", "đọc sách", "sách vở", "vở văn", "văn hoá", "hoá học", "học trò", "trò chơi", "chơi đùa", "đùa giỡn", "giỡn đùa", "đùa vui", "vui vẻ", "vẻ đẹp", "đẹp tự", "tự nhiên", "nhiên thiên", "thiên nhiên", "nhiên liệu", "liệu pháp", "pháp luật", "luật lệ", "lệ quyền", "quyền lợi", "lợi ích", "ích kỷ", "kỷ luật", "luật pháp", "pháp nhân", "nhân quả", "quả là", "làm ơn", "ơn trời", "trời ơi", "ơi là", "là thế", "thế nào", "nào là", "là gì", "gì đây", "đây là", "là đây", "đâu đó", "đó là", "là đó", "đó đâu", "đâu đây"]; // Danh sách từ để chọn
+let currentWord = "";
 
-        function submitWord() {
-            const input = document.getElementById('wordInput');
-            const newWord = input.value.trim().toLowerCase();
+        let countdownTimer; 
+        let timeLeft = 60;
 
-            if (newWord.length === 0) {
-                alert('Vui lòng nhập từ.');
-                return;
-            }
 
-            if (words.length > 0) {
-                const lastWord = words[words.length - 1];
-                if (lastWord[lastWord.length - 1] !== newWord[0]) {
-                    alert('Từ của bạn phải bắt đầu bằng chữ cái cuối cùng của từ trước.');
-                    return;
-                }
-            }
-
-            words.push(newWord);
-            displayWords();
-            input.value = '';
+        function startGame() {
+            clearInterval(countdownTimer);
+            currentWord = getRandomWord();
+            document.getElementById("wordDisplay").innerText = currentWord;
+            document.getElementById("answerInput").value = "";
+            document.getElementById("countdown").innerText = timeLeft;
+            countdownTimer = setInterval(updateTimer, 1000);
         }
 
-        function displayWords() {
-            const wordList = document.getElementById('wordList');
-            wordList.innerHTML = '';
-            words.forEach(word => {
-                const div = document.createElement('div');
-                div.className = 'word-item';
-                div.textContent = word;
-                wordList.appendChild(div);
-            });
+        function updateTimer() {
+            timeLeft--;
+            document.getElementById("countdown").innerText = timeLeft;
+            if (timeLeft === 0) {
+                clearInterval(countdownTimer);
+                alert("Hết thời gian!");
+            }
         }
+
+        function getRandomWord() {
+            return words[Math.floor(Math.random() * words.length)];
+        }
+
+function submitAnswer() {
+    const userAnswer = document.getElementById("answerInput").value.trim().toLowerCase();
+    const lastWords = userAnswer.split(" "); // Tách các từ trong câu trả lời
+    const lastWord = lastWords[lastWords.length - 1]; // Lấy từ cuối cùng trong câu trả lời
+    if (words.includes(userAnswer) && currentWord.endsWith(lastWord)) { // Kiểm tra cả hai điều kiện
+        currentWord = userAnswer;
+        document.getElementById("wordDisplay").innerText = currentWord;
+        document.getElementById("answerInput").value = "";
+        setTimeout(computerTurn, 1000); // Đợi 1 giây sau khi người chơi đưa ra câu trả lời
+    } else {
+        clearInterval(countdownTimer);
+        alert("Bạn đã mắc lỗi hoặc từ của bạn không có trong từ điển hoặc không phù hợp với từ hiện tại! Trò chơi kết thúc.");
+    }
+}
+
+
+function computerTurn() {
+    const lastWords = currentWord.split(" "); // Tách các từ trong từ hiện tại
+    const currentWordsLastWord = lastWords[lastWords.length - 1]; // Lấy từ cuối cùng trong từ hiện tại
+    const possibleWords = words.filter(word => word.startsWith(currentWordsLastWord));
+    if (possibleWords.length > 0) {
+        const computerWord = possibleWords[Math.floor(Math.random() * possibleWords.length)];
+        currentWord = currentWord + " " + computerWord;
+        document.getElementById("wordDisplay").innerText = currentWord;
+    } else {
+        alert("Máy không thể tạo ra từ nào khác! Trò chơi kết thúc.");
+        clearInterval(countdownTimer);
+    }
+}
+
+
+
     </script>
 </body>
 </html>
