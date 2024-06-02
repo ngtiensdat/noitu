@@ -10,13 +10,31 @@
         display: block;
         margin: 0 auto;
     }
+    .controls {
+        text-align: center;
+        margin-top: 10px;
+    }
+    button {
+        margin: 5px;
+        padding: 10px;
+        font-size: 16px;
+    }
 </style>
 </head>
 <body>
 <canvas id="gameCanvas" width="400" height="400"></canvas>
+<div class="controls">
+    <button id="up">Up</button>
+    <button id="down">Down</button>
+    <button id="left">Left</button>
+    <button id="right">Right</button>
+    <button id="restart" style="display: none;">Chơi lại</button>
+    <div id="result" style="display: none;"></div>
+</div>
 <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
+    let gameover = false;
 
     const gridSize = 20;
     const tileCount = canvas.width / gridSize;
@@ -131,7 +149,8 @@
     spawnFood();
     setInterval(main, 100);
     document.addEventListener("keydown", changeDirection);
-	 document.getElementById("up").addEventListener("click", () => {
+	
+	    document.getElementById("up").addEventListener("click", () => {
         changeDirection({ key: "ArrowUp" });
     });
     document.getElementById("down").addEventListener("click", () => {
@@ -143,6 +162,29 @@
     document.getElementById("right").addEventListener("click", () => {
         changeDirection({ key: "ArrowRight" });
     });
+
+    document.getElementById("restart").addEventListener("click", () => {
+        document.location.reload();
+    });
+	function gameOver() {
+        gameover = true;
+        document.getElementById("result").innerHTML = "Game Over! Your score is " + score;
+        document.getElementById("restart").style.display = "inline-block";
+        document.getElementById("result").style.display = "block";
+    }
+
+    function main() {
+        if (!gameover) {
+            clearCanvas();
+            drawFood();
+            moveSnake();
+            drawSnake();
+            checkCollision();
+        }
+    }
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
